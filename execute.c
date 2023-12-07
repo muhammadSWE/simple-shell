@@ -35,7 +35,7 @@ void wait_for_child(pid_t pid, char *shell)
 */
 void execute_command(char *cmd, char *shell)
 {
-	/*assuming max length 100*/
+	pid_t pid;
 	char *arguments[100];
 	int i = 0;
 	/*the argument parsing loop*/
@@ -58,7 +58,7 @@ void execute_command(char *cmd, char *shell)
 	}
 	arguments[i] = NULL;
 	/*child process*/
-	pid_t pid = fork();
+	pid = fork();
 
 	if (pid == -1)
 	{
