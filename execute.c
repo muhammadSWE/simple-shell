@@ -35,36 +35,50 @@ void wait_for_child(pid_t pid, char *shell)
 */
 void execute_command(char *cmd, char *shell)
 {
-	char *argv[2];
 	pid_t pid;
-
-	argv[0] = cmd;
-	argv[1] = NULL;
+	char *arguments[100];
+	int i = 0;
 
 	if (!cmd)
 	{
 		perror(shell);
 		exit(EXIT_FAILURE);
 	}
+	
+	/*the argument parsing loop*/
+	while (*cmd != '\0')
+	{
+		/*skip spaces at beginning*/
+		while (*cmd == ' ' || *cmd == '\t' || *cmd == '\n')
+			cmd++;
+
+		if (*cmd == '\0')
+			break;
+		/*store the argument*/
+		arguments[i++] = cmd;
+		/*navigate to end of argument*/
+		while (*cmd != '\0' && *cmd != ' ' && *cmd != '\t' && *cmd != '\n')
+			cmd++;
+
+		if (*cmd != '\0')
+			*cmd++ = '\0';
+	}
+	arguments[i] = NULL;
 
 	/*Create a child process*/
 	pid = fork();
-	if (pid < 0)
+
+	if (pid == -1)
 	{
 		perror(shell);
-		exit(1);
-	}
-
-	/*If this is the chile process, execute the command*/
-	if (pid == 0)
-	{
-		/*Check if there was a problem in executing the command*/
-		if (execve(cmd, argv, NULL) == -1)
-			perror(shell);
-
 		exit(EXIT_FAILURE);
 	}
-	/*If this is the parent process, wait for the child process*/
+	else if (pid == 0)
+	{
+		if (execve(arguments[0], arguments, NULL))
+			perror(shell);
+		exit(EXIT_FAILURE);
+	}
 	else
 	{
 		wait_for_child(pid, shell);
