@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 {
 	char *command = NULL;
 	size_t len = 0;
+	(void)argc;
 
 	while (1 == 1)
 	{
