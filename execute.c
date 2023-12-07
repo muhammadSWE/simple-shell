@@ -18,7 +18,7 @@ void wait_for_child(pid_t pid, char *shell)
 		w = waitpid(pid, &status, WUNTRACED | WCONTINUED);
 #else
 		w = waitpid(pid, &status, WUNTRACED);
-		#endif
+#endif
 		if (w == -1)
 		{
 			perror(shell);
@@ -41,6 +41,12 @@ void execute_command(char *cmd, char *shell)
 	argv[0] = cmd;
 	argv[1] = NULL;
 
+	if (!cmd)
+	{
+		perror(shell);
+		exit(EXIT_FAILURE);
+	}
+
 	/*Create a child process*/
 	pid = fork();
 	if (pid < 0)
@@ -54,10 +60,9 @@ void execute_command(char *cmd, char *shell)
 	{
 		/*Check if there was a problem in executing the command*/
 		if (execve(cmd, argv, NULL) == -1)
-		{
 			perror(shell);
-			exit(EXIT_FAILURE);
-		}
+
+		exit(EXIT_FAILURE);
 	}
 	/*If this is the parent process, wait for the child process*/
 	else

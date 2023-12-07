@@ -8,38 +8,40 @@
 */
 int main(int argc, char *argv[])
 {
-	char *command = NULL;
+	char *command = NULL, *trimmed_command;
 	size_t len = 0;
+	ssize_t read;
+	(void)argc;
 
 	while (1 == 1)
 	{
-		print(SHELL_PROMPT);
+		if (isatty(STDIN_FILENO) == 1)
+			print(SHELL_PROMPT);
 
 		/*Check if reading the command gave an error*/
-		if (getline(&command, &len, stdin) == -1)
+		read = getline(&command, &len, stdin);
+		if (read == -1 || len > MAX_CMD_LEN)
 		{
-			/*Check if user pressed ctrl + D*/
-			if (feof(stdin))
-			{
-				print("\n");
-				exit(EXIT_SUCCESS);
-			}
-			/*Display error and exit due to error in reading command*/
-			else
-			{
-				perror("Error reading the command");
-				exit(EXIT_FAILURE);
-			}
+			if (command)
+				free(command);
+			exit(EXIT_SUCCESS);
+		}
+		/*Remove whitespace from command*/
+		trimmed_command = trim_whitespace(command);
+		if (!trimmed_command)
+		{
+			free(command);
+			exit(EXIT_SUCCESS);
 		}
 
-		/*Strip the command off of new line character*/
-		if (command[_strlen(command) - 1] == '\n')
-			command[_strlen(command) - 1] = '\0';
-
 		/*Execute the command*/
-		execute_command(command, argv[0]);
+		execute_command(trimmed_command, argv[0]);
+
+		if (command)
+			free(command);
+		free(trimmed_command);
+		command = NULL;
 	}
 
-	free(command);
 	return (0);
 }

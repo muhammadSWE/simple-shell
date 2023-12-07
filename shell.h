@@ -15,8 +15,10 @@
 /*Function prototypes*/
 
 /*Helper functions*/
-int _strlen(char *s);
+int _strlen(const char *s);
 void print(char *string);
+int _isspace(int c);
+char *trim_whitespace(const char *str);
 
 /*Main functions*/
 void execute_command(char *cmd, char *shell);
