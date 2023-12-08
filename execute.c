@@ -37,50 +37,42 @@ void execute_command(char *cmd, char *shell)
 {
 	pid_t pid;
 	char *arguments[100];
-	int i = 0;
+	char *token, cmd_arr[MAX_CMD_LEN];
+	int i;
 
-	if (!cmd)
+	strcpy(cmd_arr, cmd);
+	token = strtok(cmd_arr, " ");
+	for (i = 0; token; i++)
 	{
-		perror(shell);
-		exit(EXIT_FAILURE);
-	}
-	
-	/*the argument parsing loop*/
-	while (*cmd != '\0')
-	{
-		/*skip spaces at beginning*/
-		while (*cmd == ' ' || *cmd == '\t' || *cmd == '\n')
-			cmd++;
-
-		if (*cmd == '\0')
-			break;
-		/*store the argument*/
-		arguments[i++] = cmd;
-		/*navigate to end of argument*/
-		while (*cmd != '\0' && *cmd != ' ' && *cmd != '\t' && *cmd != '\n')
-			cmd++;
-
-		if (*cmd != '\0')
-			*cmd++ = '\0';
+		arguments[i] = malloc(_strlen(token) * sizeof(char) + 1);
+		if (!arguments[i])
+		{
+			free_args(arguments, i);
+			exit(EXIT_FAILURE);
+		}
+		_strcpy(arguments[i], token);
+		token = strtok(NULL, " ");
 	}
 	arguments[i] = NULL;
 
-	/*Create a child process*/
 	pid = fork();
 
 	if (pid == -1)
 	{
+		free_args(arguments, i);
 		perror(shell);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
-		if (execve(arguments[0], arguments, NULL))
+		if (execve(arguments[0], arguments, NULL) == -1)
 			perror(shell);
+		free_args(arguments, i);
 		exit(EXIT_FAILURE);
 	}
 	else
 	{
 		wait_for_child(pid, shell);
+		free_args(arguments, i);
 	}
 }

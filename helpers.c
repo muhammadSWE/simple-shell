@@ -61,16 +61,41 @@ char *trim_whitespace(const char *str)
 		return (NULL);
 
 	j = _strlen(str) - 1;
-	while (j > i && _isspace(str[j]))
+	while (j > i && _isspace(str[j - 1]))
 		j--;
 
 	result = malloc((j - i + 2) * sizeof(char));
 
-	for (c = 0; i <= j; c++)
+	for (c = 0; i < j; c++)
 	{
 		result[c] = str[i];
 		i++;
 	}
+	result[c] = '\0';
 
 	return (result);
+}
+
+/**
+ *   _strcpy - copies string into another
+ *  @dest: pointer to first char in destination string
+ *  @src: pointer to first char in src string
+ *  Return: void
+ */
+char *_strcpy(char *dest, char *src)
+{
+	int i = 0;
+
+	if (!src || !dest)
+		return (NULL);
+
+	while (src[i] != '\0')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+
+	dest[i] = '\0';
+
+	return (dest);
 }
