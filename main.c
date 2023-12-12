@@ -8,7 +8,8 @@
 */
 int main(int argc, char *argv[])
 {
-	char *command = NULL, *trimmed_command;
+	char *command = NULL, *trimmed_command, *arguments[100];
+	int args_num, status = 0;
 	size_t len = 0;
 	ssize_t read;
 	(void)argc;
@@ -18,7 +19,6 @@ int main(int argc, char *argv[])
 		if (isatty(STDIN_FILENO) == 1)
 			print(SHELL_PROMPT);
 
-		/*Check if reading the command gave an error*/
 		read = getline(&command, &len, stdin);
 		if (read == -1 || len > MAX_CMD_LEN)
 		{
@@ -34,14 +34,18 @@ int main(int argc, char *argv[])
 			exit(EXIT_SUCCESS);
 		}
 
-		/*Execute the command*/
-		execute_command(trimmed_command, argv[0]);
+		args_num = tokenize(&*arguments, trimmed_command);
+		if (strcmp(arguments[0], "exit") == 0)
+		{
+			free_everything(arguments, command, trimmed_command, args_num);
+			break;
+		}
 
-		if (command)
-			free(command);
-		free(trimmed_command);
+		status = execute_command(&*arguments, argv[0]);
+
+		free_everything(arguments, command, trimmed_command, args_num);
 		command = NULL;
 	}
 
-	return (0);
+	return (status);
 }

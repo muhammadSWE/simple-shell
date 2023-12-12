@@ -12,6 +12,7 @@
 /*Constants definitions*/
 #define MAX_CMD_LEN 16384
 #define SHELL_PROMPT "simple_shell$ "
+#define EXIT_CMD 10
 
 /*Function prototypes*/
 
@@ -27,10 +28,11 @@ char *_strchr(char *s, char c);
 char *_strcat(char *dest, char *src);
 
 /*Main functions*/
-void execute_command(char *cmd, char *shell);
-void wait_for_child(pid_t pid, char *shell);
-void free_args(char *args[], int n);
+int execute_command(char *arguments[], char *shell);
+int wait_for_child(pid_t pid, char *shell);
+void free_everything(char *args[], char *cmd, char *trmd_cmd, int n);
 void path_handler(char **command);
+int tokenize(char **args_list, char *buffer);
 /*End of function prototypes*/
 
 #endif /*SHELL_H*/

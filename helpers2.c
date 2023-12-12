@@ -47,3 +47,21 @@ char *_strcat(char *dest, char *src)
 
 	return (dest);
 }
+
+/**
+ * free_everything - frees all malloc'ed memory
+ * @args: arguments list
+ * @cmd: command buffer
+ * @trmd_cmd: trimmed command
+ * @n: number of arguments
+ * Return: void
+*/
+void free_everything(char *args[], char *cmd, char *trmd_cmd, int n)
+{
+	int i;
+
+	for (i = 0; i < n; i++)
+		free(args[i]);
+	free(cmd);
+	free(trmd_cmd);
+}
