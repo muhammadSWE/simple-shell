@@ -36,11 +36,10 @@ void wait_for_child(pid_t pid, char *shell)
 void execute_command(char *cmd, char *shell)
 {
 	pid_t pid;
-	char *arguments[100];
-	char *token, cmd_arr[MAX_CMD_LEN];
+	char *arguments[100], *token, cmd_arr[MAX_CMD_LEN];
 	int i;
 
-	strcpy(cmd_arr, cmd);
+	_strcpy(cmd_arr, cmd);
 	token = strtok(cmd_arr, " ");
 	for (i = 0; token; i++)
 	{
@@ -54,7 +53,7 @@ void execute_command(char *cmd, char *shell)
 		token = strtok(NULL, " ");
 	}
 	arguments[i] = NULL;
-
+	path_handler(&arguments[0]);
 	pid = fork();
 
 	if (pid == -1)
@@ -74,5 +73,29 @@ void execute_command(char *cmd, char *shell)
 	{
 		wait_for_child(pid, shell);
 		free_args(arguments, i);
+	}
+}
+/**
+ * path_handler - handles given paths to commands
+ * @command: command given
+ *
+ * Return: void
+ */
+void path_handler(char **command)
+{
+	if (strchr(*command, '/') == NULL)
+	{
+		int i = sizeof(char);
+		char *path_command = malloc((_strlen("/bin/") + _strlen(*command) + 1) * i);
+
+		if (!path_command)
+		{
+			perror("Memory allocation error");
+			exit(EXIT_FAILURE);
+		}
+		_strcpy(path_command, "/bin/");
+		_strcat(path_command, *command);
+		free(*command);
+		*command = path_command;
 	}
 }
