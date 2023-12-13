@@ -26,23 +26,22 @@ int main(int argc, char *argv[])
 				free(command);
 			exit(EXIT_SUCCESS);
 		}
-		/*Remove whitespace from command*/
 		trimmed_command = trim_whitespace(command);
 		if (!trimmed_command)
 		{
 			free(command);
 			exit(EXIT_SUCCESS);
 		}
-
 		args_num = tokenize(&*arguments, trimmed_command);
 		if (strcmp(arguments[0], "exit") == 0)
 		{
 			free_everything(arguments, command, trimmed_command, args_num);
 			break;
 		}
-
-		status = execute_command(&*arguments, argv[0]);
-
+		else if (strcmp(arguments[0], "env") == 0)
+			print_env();
+		else
+			status = execute_command(&*arguments, argv[0]);
 		free_everything(arguments, command, trimmed_command, args_num);
 		command = NULL;
 	}

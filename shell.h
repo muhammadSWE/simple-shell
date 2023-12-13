@@ -14,6 +14,9 @@
 #define SHELL_PROMPT "simple_shell$ "
 #define EXIT_CMD 10
 
+/*Environment variables*/
+extern char **environ;
+
 /*Function prototypes*/
 
 /*Helper functions*/
@@ -33,6 +36,7 @@ int wait_for_child(pid_t pid, char *shell);
 void free_everything(char *args[], char *cmd, char *trmd_cmd, int n);
 void path_handler(char **command);
 int tokenize(char **args_list, char *buffer);
+void print_env(void);
 /*End of function prototypes*/
 
 #endif /*SHELL_H*/

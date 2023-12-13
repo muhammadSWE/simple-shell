@@ -62,6 +62,22 @@ void free_everything(char *args[], char *cmd, char *trmd_cmd, int n)
 
 	for (i = 0; i < n; i++)
 		free(args[i]);
-	free(cmd);
+	if (cmd)
+		free(cmd);
 	free(trmd_cmd);
+}
+
+/**
+ * print_env - prints environment variables
+ * Return: void
+*/
+void print_env(void)
+{
+	int i;
+
+	for (i = 0; environ[i]; i++)
+	{
+		printf("%s\n", environ[i]);
+	}
+
 }
