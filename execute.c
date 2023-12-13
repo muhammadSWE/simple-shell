@@ -40,7 +40,10 @@ int execute_command(char *arguments[], char *shell)
 	int status;
 	pid_t pid;
 
-	path_handler(&arguments[0]);
+	status = path_handler(&arguments[0], shell);
+	if (status != 0)
+		return (status);
+
 	pid = fork();
 
 	if (pid == -1)
@@ -51,7 +54,7 @@ int execute_command(char *arguments[], char *shell)
 	else if (pid == 0)
 	{
 		if (execve(arguments[0], arguments, NULL) == -1)
-			perror(shell);
+			cmd_not_found(arguments[0], shell);
 		return (1);
 	}
 	else

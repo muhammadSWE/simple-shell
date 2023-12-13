@@ -79,5 +79,18 @@ void print_env(void)
 	{
 		printf("%s\n", environ[i]);
 	}
+}
 
+/**
+ * cmd_not_found - prints not found error to stderr
+ * @cmd: command
+ * @shell: shell name
+ * Return: void
+*/
+void cmd_not_found(char *cmd, char *shell)
+{
+	write(STDERR_FILENO, shell, _strlen(shell));
+	write(STDERR_FILENO, ": 1: ", 5);
+	write(STDERR_FILENO, cmd, _strlen(cmd));
+	write(STDERR_FILENO, ": not found\n", 12);
 }

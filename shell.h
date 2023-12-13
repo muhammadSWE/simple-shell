@@ -34,7 +34,8 @@ char *_strcat(char *dest, char *src);
 int execute_command(char *arguments[], char *shell);
 int wait_for_child(pid_t pid, char *shell);
 void free_everything(char *args[], char *cmd, char *trmd_cmd, int n);
-void path_handler(char **command);
+int path_handler(char **command, char *shell);
+void cmd_not_found(char *cmd, char *shell);
 int tokenize(char **args_list, char *buffer);
 void print_env(void);
 /*End of function prototypes*/

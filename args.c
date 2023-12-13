@@ -28,10 +28,9 @@ int tokenize(char **args_list, char *buffer)
 /**
  * path_handler - handles given paths to commands
  * @command: command given
- *
- * Return: void
+ * Return: 0 on success or 127 if cmd not found
  */
-void path_handler(char **command)
+int path_handler(char **command, char *shell)
 {
 	if (strchr(*command, '/') == NULL)
 	{
@@ -45,7 +44,14 @@ void path_handler(char **command)
 		}
 		_strcpy(path_command, "/bin/");
 		_strcat(path_command, *command);
+		if (access(path_command, F_OK | X_OK) != 0)
+		{
+			cmd_not_found(*command, shell);
+			free(path_command);
+			return (127);
+		}
 		free(*command);
 		*command = path_command;
 	}
+	return (0);
 }

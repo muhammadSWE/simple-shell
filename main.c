@@ -44,6 +44,8 @@ int main(int argc, char *argv[])
 			status = execute_command(&*arguments, argv[0]);
 		free_everything(arguments, command, trimmed_command, args_num);
 		command = NULL;
+		if (status == 127)
+			return (status);
 	}
 
 	return (status);
